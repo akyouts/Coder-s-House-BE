@@ -5,13 +5,23 @@ class UserService {
 
      async findUser(filter){
 
-        UserModel.findOne(filter).then((res)=>{
-            return res
-        }).catch((error)=>{
-            throw new Error("Enable to Access Data Base");
-        });
+        const result = await UserModel.findOne(filter);
+        return result;
+       
 
      }
+
+
+     async createUser(data){
+          
+         const result = await UserModel.create(data);
+
+         return result
+
+       
+
+     }
+
 
 }
 
