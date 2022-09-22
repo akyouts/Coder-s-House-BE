@@ -3,10 +3,13 @@ const OtpService = require('../Service/OtpService');
 const tokenService = require('../Service/token-service');
 const userService = require('../Service/user-service');
 
+
+
 class AuthController{
     
     async sendOtp(req,res){
          const { Phone } = req.body;
+         console.log(req.body)
 
          if(!Phone){
             return res.status(400).json({ msg:"Phone Number Field is Required"  });
@@ -18,8 +21,8 @@ class AuthController{
 
 
          try {
-            await OtpService.sendBySMS(Phone,otp);
-         return res.status(200).json({ Phone:Phone ,hash:`${hash}-${expires}` })
+            // await OtpService.sendBySMS(Phone,otp);
+         return res.status(200).json({Otp:otp, Phone:Phone ,hash:`${hash}-${expires}` })
          
          } catch (error) {
             console.log(error);
@@ -71,7 +74,7 @@ class AuthController{
                         httpOnly:true
                       })
 
-                      res.json({ acessToken });
+                      res.json({ acessToken , user });
                 }
             }
         }
