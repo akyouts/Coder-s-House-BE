@@ -56,25 +56,31 @@ class AuthController{
                         user = await userService.findUser({ Phone })
                           
                         if(!user){
-                            
+                          console.log("Running");
                           user = await userService.createUser({ Phone });
                         }
                         
                       } catch (error) {
+                        
                          return res.status(500).json({ msg:"Some thing Went Wrong" })
                       }
 
 
                       // Generate Token
                       const { acessToken , refreshToken } = tokenService.generateTokens({id:user._id, activated:user.activated});
-                      console.log(acessToken);
+                      await tokenService.storeRefreshToken(refreshToken,user._id)
 
                       res.cookie(`refreshToken`, refreshToken,{
                         maxAge:1000 * 60  * 60 * 24 *30,
                         httpOnly:true
                       })
 
-                      res.json({ acessToken , user });
+                      res.cookie(`acessToken`, refreshToken,{
+                        maxAge:1000 * 60  * 60 * 24 *30,
+                        httpOnly:true
+                      })
+
+                      res.json({ user , auth:true });
                 }
             }
         }

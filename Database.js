@@ -6,7 +6,7 @@ function DBConnection(){
     mongoose
     .connect(DB_URL)
     .then(() => console.log('mongoDB connected...'))
-    .catch(()=> console.log('mongoDb Connection Failed'));
+    .catch((e)=> console.log('mongoDb Connection Failed',e));
 
 }
 
