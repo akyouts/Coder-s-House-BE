@@ -1,30 +1,21 @@
 Arguments: 
-  /usr/bin/node /usr/bin/yarn add @redusjs/toolkit react-redux
+  /var/lib/snapd/snap/node/6800/bin/node /var/lib/snapd/snap/node/6800/bin/yarn.js add cookie-parser
 
 PATH: 
-  /home/ahad/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+  /home/ahadk/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
 
 Yarn version: 
-  1.22.17
+  1.22.19
 
 Node version: 
-  18.7.0
+  16.18.0
 
 Platform: 
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@redusjs%2ftoolkit: Not found
-      at params.callback [as _callback] (/usr/lib/node_modules/yarn/lib/cli.js:67029:18)
-      at self.callback (/usr/lib/node_modules/yarn/lib/cli.js:140883:22)
-      at Request.emit (node:events:513:28)
-      at Request.<anonymous> (/usr/lib/node_modules/yarn/lib/cli.js:141855:10)
-      at Request.emit (node:events:513:28)
-      at IncomingMessage.<anonymous> (/usr/lib/node_modules/yarn/lib/cli.js:141777:12)
-      at Object.onceWrapper (node:events:627:28)
-      at IncomingMessage.emit (node:events:525:35)
-      at endReadableNT (node:internal/streams/readable:1359:12)
-      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+  Error: getaddrinfo EAI_AGAIN registry.yarnpkg.com
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:109:26)
 
 npm manifest: 
   {

@@ -75,7 +75,7 @@ class AuthController{
                         httpOnly:true
                       })
 
-                      res.cookie(`acessToken`, refreshToken,{
+                      res.cookie(`acessToken`, acessToken,{
                         maxAge:1000 * 60  * 60 * 24 *30,
                         httpOnly:true
                       })
