@@ -1,3 +1,5 @@
+const UserDto = require('../Dtos/ user-dto');
+const { use } = require('../Routes');
 const hashService = require('../Service/hash-service');
 const OtpService = require('../Service/OtpService');
 const tokenService = require('../Service/token-service');
@@ -80,11 +82,63 @@ class AuthController{
                         httpOnly:true
                       })
 
-                      res.json({ user , auth:true });
+                      const userData = new UserDto(user);
+
+                      res.json({ userData , auth:true });
                 }
             }
         }
 
+    }
+
+    async refresh(req,res){
+      var userData;
+      var user;
+      try {
+         const {refreshToken:refreshTokenFromClient} = req.cookies;
+          userData = await tokenService.verifyrefreshToken(refreshTokenFromClient);
+         
+
+      } catch (error) {
+         res.status(401).json({ msg:"Invalid Token" });
+      }
+
+      try {
+        const token = await tokenService.findTokenInDb(userData._id,refreshTokenFromClient);
+         if(!token){
+              res.status(401).json({ msg:"Invalid Token" });
+         }
+         user = userService.findUser({_id:userData._id})
+         if(!user){
+          res.status(404).json({msg:"No user Found"});
+         }
+      } catch (error) {
+        res.status(500).json({ msg:"Internal Server Error" });
+      }
+
+      const { acessToken ,  refreshToken } = tokenService.generateTokens({ _id:userData._id })
+
+      try {
+
+        await tokenService.updateRefreshToken(user._id,refreshToken);
+        
+      } catch (error) {
+          res.status(500).json({msg:"Internal Server Error"});
+      }
+
+      res.cookie(`refreshToken`, refreshToken,{
+        maxAge:1000 * 60  * 60 * 24 *30,
+        httpOnly:true
+      })
+
+      res.cookie(`acessToken`, acessToken,{
+        maxAge:1000 * 60  * 60 * 24 *30,
+        httpOnly:true
+      })
+
+      const uservalues= new UserDto(user);
+
+      res.json({ uservalues , auth:true });
     }
 }
 
