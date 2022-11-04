@@ -7,7 +7,7 @@ class TokenService{
 
     generateTokens(payload){
         const acessToken = jwt.sign(payload, accessTokenSecret , {
-            expiresIn:"24h"
+            expiresIn:"1m"
         })
 
         const refreshToken = jwt.sign(payload,refreshTokenSecret,{
@@ -42,11 +42,15 @@ class TokenService{
     }
 
     async findTokenInDb(UserId,token){
-        return await refreshToken.findOne({ _id:UserId , token });
+        return await refreshToken.findOne({ UserId:UserId , token:token });
     }
 
-    async updateRefreshToken(userId ,token){
-        return await refreshToken.updateOne({ _id:userId },{ token });
+    async updateRefreshToken(userId ,newtoken){
+        return await refreshToken.updateOne({ UserId:userId },{ token:newtoken });
+    }
+
+    async deleteTokenFromDb(token){
+        return refreshToken.deleteOne({ token });
     }
     
 

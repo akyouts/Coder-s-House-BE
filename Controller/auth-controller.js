@@ -11,7 +11,7 @@ class AuthController{
     
     async sendOtp(req,res){
          const { Phone } = req.body;
-         console.log(req.body)
+         
 
          if(!Phone){
             return res.status(400).json({ msg:"Phone Number Field is Required"  });
@@ -27,7 +27,7 @@ class AuthController{
          return res.status(200).json({Otp:otp, Phone:Phone ,hash:`${hash}-${expires}` })
          
          } catch (error) {
-            console.log(error);
+            
             return res.status(500).json({ msg:"Some thing Went Wrong" })
          }
          
@@ -58,7 +58,7 @@ class AuthController{
                         user = await userService.findUser({ Phone })
                           
                         if(!user){
-                          console.log("Running");
+                          
                           user = await userService.createUser({ Phone });
                         }
                         
@@ -84,7 +84,7 @@ class AuthController{
 
                       const userData = new UserDto(user);
 
-                      res.json({ userData , auth:true });
+                      res.json({ user:userData , auth:true });
                 }
             }
         }
@@ -94,52 +94,76 @@ class AuthController{
     async refresh(req,res){
       var userData;
       var user;
+      var newAcessToken , newRefreshToken;
+      const {refreshToken:refreshTokenFromClient} = req.cookies;
+      
       try {
-         const {refreshToken:refreshTokenFromClient} = req.cookies;
-          userData = await tokenService.verifyrefreshToken(refreshTokenFromClient);
          
+          userData = await tokenService.verifyrefreshToken(refreshTokenFromClient);
+     
 
       } catch (error) {
-         res.status(401).json({ msg:"Invalid Token" });
+         return res.status(401).json({ msg:"Invalid Token 1" });
       }
 
       try {
-        const token = await tokenService.findTokenInDb(userData._id,refreshTokenFromClient);
+        
+        
+        const token = await tokenService.findTokenInDb(userData.id?userData.id:userData._id,refreshTokenFromClient);
+           
          if(!token){
-              res.status(401).json({ msg:"Invalid Token" });
+              return res.status(401).json({ msg:"Invalid Token 2" });
          }
-         user = userService.findUser({_id:userData._id})
+         user = await userService.findUser({_id:userData.id?userData.id:userData._id})
          if(!user){
-          res.status(404).json({msg:"No user Found"});
+          return res.status(404).json({msg:"No user Found"});
          }
       } catch (error) {
-        res.status(500).json({ msg:"Internal Server Error" });
+        return res.status(500).json({ msg:"Internal Server Error 1" });
       }
 
-      const { acessToken ,  refreshToken } = tokenService.generateTokens({ _id:userData._id })
-
+      const { acessToken ,  refreshToken } = tokenService.generateTokens({id:userData.id?userData.id:userData._id , activated:userData.activated })
+      newAcessToken = acessToken,
+      newRefreshToken = refreshToken;
+      
       try {
-
+        
         await tokenService.updateRefreshToken(user._id,refreshToken);
         
       } catch (error) {
-          res.status(500).json({msg:"Internal Server Error"});
+          return res.status(500).json({msg:"Internal Server Error"});
       }
+       
 
-      res.cookie(`refreshToken`, refreshToken,{
+      res.cookie(`refreshToken`, newRefreshToken,{
         maxAge:1000 * 60  * 60 * 24 *30,
         httpOnly:true
       })
 
-      res.cookie(`acessToken`, acessToken,{
+      res.cookie(`acessToken`, newAcessToken,{
         maxAge:1000 * 60  * 60 * 24 *30,
         httpOnly:true
       })
 
       const uservalues= new UserDto(user);
 
-      res.json({ uservalues , auth:true });
-    }
+      res.status(200).json({ user:uservalues , auth:true });
+     }
+
+     async logout(req,res){
+
+      try {
+        await tokenService.deleteTokenFromDb(req.cookies.refreshToken);
+        res.clearCookie('refreshToken');
+        res.clearCookie('acessToken');
+        return res.status(200).json({ user:null , auth:false })
+        
+      } catch (error) {
+        return res.status(500).json('Internal Server Error')
+      }
+      
+
+     }
 }
 
 module.exports = new AuthController();

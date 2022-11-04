@@ -5,14 +5,13 @@ module.exports = async (req,res,next)=>{
     try {
 
         const { acessToken } = req.cookies
-        console.log(acessToken);
         if(!acessToken){
             throw new Error();
         }
 
         const userData = await tokenService.verifyAccessToken(acessToken);
         req.user = userData
-        console.log(userData);
+
         next();
     
         

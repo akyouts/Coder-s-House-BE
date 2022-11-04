@@ -31,7 +31,7 @@ class activateController{
 
         try {
           var user = await User.findById(userId);
-          console.log(user);
+         
 
         if(!user){
           res.status(200).json({msg:"User not found"});
