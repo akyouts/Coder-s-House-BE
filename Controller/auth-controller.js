@@ -84,7 +84,7 @@ class AuthController{
 
                       const userData = new UserDto(user);
 
-                      res.json({ user:userData , auth:true });
+                      return res.json({ user:userData , auth:true });
                 }
             }
         }
@@ -147,7 +147,7 @@ class AuthController{
 
       const uservalues= new UserDto(user);
 
-      res.status(200).json({ user:uservalues , auth:true });
+      return res.status(200).json({ user:uservalues , auth:true });
      }
 
      async logout(req,res){

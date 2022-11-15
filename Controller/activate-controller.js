@@ -22,7 +22,7 @@ class activateController{
         jimpRes.resize(150,jimp.AUTO).write(path.resolve(__dirname,`../storage/${imagePath}`))
         
       } catch (error) {
-        res.status(500).json({ msg:"Not able to Compress the image" });
+        return res.status(500).json({ msg:"Not able to Compress the image" });
       }
 
          
@@ -34,7 +34,7 @@ class activateController{
          
 
         if(!user){
-          res.status(200).json({msg:"User not found"});
+          return res.status(200).json({msg:"User not found"});
 
         }
         else{
@@ -45,13 +45,13 @@ class activateController{
        
           await User.updateOne({_id:userId},user)
           
-          res.status(200).json( {user :new UserDto(user) , auth:true} );
+          return res.status(200).json( {user :new UserDto(user) , auth:true} );
         
 
         }
         } catch (error) {
           console.log(error);
-           res.status(500).json({ msg:"Something Went Wrong" });
+          return res.status(500).json({ msg:"Something Went Wrong" });
 
         }
 
