@@ -1,4 +1,5 @@
 const roomService = require('../Service/room-service')
+const roomDto = require('../Dtos/room-dto');
 
 class roomsController{
 
@@ -13,8 +14,13 @@ class roomsController{
         const room = await  roomService.create({ 
             topic,
             roomType,
-            ownerId:req.user._id||req.user.id
+            ownerId:req.user._id||req.user.id,
+            speaker:[req.user._id||req.user.id]
         })
+        const roomRes = new roomDto(room);
+        return res.status(200).json(roomRes)
+
+        
 
     }
     
