@@ -10,6 +10,7 @@ router.post('/api/verify-otp',authController.verifyOtp)
 router.post('/api/activate',authMiddleware,activateController.activate)
 router.get('/api/refresh',authController.refresh)
 router.post('/api/logout',authMiddleware,authController.logout)
-router.post('/api/rooms',authMiddleware,roomsController.create)
+router.post('/api/room',authMiddleware,roomsController.create)
+router.get('/api/room',authMiddleware,roomsController.index)
 
 module.exports = router;

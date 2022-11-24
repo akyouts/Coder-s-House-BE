@@ -23,6 +23,15 @@ class roomsController{
         
 
     }
+
+    async index(req,res){
+        const room = await roomService.getAllRooms(['open']);
+        const roomDtoRes = room.map((ele)=>{
+            return new roomDto(ele);
+        })
+
+        return res.status(200).json({ Rooms:roomDtoRes })
+    }
     
 }
 

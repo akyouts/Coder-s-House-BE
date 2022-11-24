@@ -14,6 +14,10 @@ class roomService{
         return result;
 
     }
+
+    async getAllRooms(roomType){
+         return await Room.find({ roomType:{ $in:roomType } }).populate('speaker').populate('ownerId').exec();
+    }
 }
 
 module.exports = new roomService();
